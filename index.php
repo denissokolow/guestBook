@@ -6,7 +6,7 @@ require_once __DIR__ . '/funcs.php';
 
 if (isset($_POST['register'])) {
     registration();
-     header("Location: index.php");
+    header("Location: index.php");
     exit;
 }
 
