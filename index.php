@@ -1,11 +1,26 @@
 <?php
 session_start();
 
- require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/funcs.php';
 
 if (isset($_POST['register'])) {
     registration();
+    header("Location: index.php");
+    exit;
+}
+
+if (isset($_POST['auth'])) {
+    login();
+    header("Location: index.php");
+    exit;
+}
+
+if (isset($_GET['do']) && $_GET['do'] == 'exit') {
+    if (!empty($_SESSION['user'])) {
+        unset($_SESSION['user']);
+        $_SESSION['success'] = 'Вы вышли из аккаунта';
+    }
     header("Location: index.php");
     exit;
 }
@@ -109,7 +124,8 @@ if (isset($_POST['register'])) {
 
         <div class="row">
             <div class="col-md-6 offset-md-3">
-                <p>Добро пожаловать, User! <a href="?do=exit">Log out</a></p>
+                <p>Добро пожаловать, <b><?= htmlspecialchars($_SESSION['user']['name']) ?></b>! <a href="?do=exit">Log
+                        out</a></p>
             </div>
         </div>
 
