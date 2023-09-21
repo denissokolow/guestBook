@@ -65,3 +65,37 @@ function registration(): bool //Регистрация нового пользо
     }
 
 }
+
+function save_message(): bool //Отправка поста
+{
+    global $pdo;
+
+    $message = !empty($_POST['message']) ? trim($_POST['message']) : '';//Проверка на только пробелы
+
+    if (!isset($_SESSION['user']['name'])) { //Проверка на авторизацию
+        $_SESSION['errors'] = 'Необходимо авторизоваться';
+        return false;
+    }
+
+    if (empty($message)) {//Проверка на пустое поле
+        $_SESSION['errors'] = 'Введите текст сообщения';
+        return false;
+    }
+
+    $res = $pdo->prepare("INSERT INTO messages(name, message) VALUES(?,?)");
+    if ($res->execute([$_SESSION['user']['name'], $message])) {
+        $_SESSION['success'] = 'Сообщение добавлено';
+        return true;
+    } else {
+        $_SESSION['errors'] = 'Ошибка';
+        return false;
+    }
+}
+
+function get_messages(): array //Формирование массива сообщений
+{
+    global $pdo;
+
+    $res = $pdo->query("SELECT * FROM messages ORDER BY ID DESC ");
+    return $res->fetchAll();
+}
